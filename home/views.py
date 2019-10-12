@@ -18,13 +18,37 @@ def login(request):
         form = LoginForm(request.POST)
 
         if(form.is_valid()):
+
             data = form.cleaned_data
 
             username = data['username']
             password = data['password']
 
+            profile = Profile.objects.get(username = username)
+            if(username ==profile.username and password==profile.password):
+                return redirect('index')
+            else:
+                return HttpResponse('Information incorrect')
+
+
             
     return render(request, 'login.html', {'form':form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def signup(request):
@@ -42,6 +66,7 @@ def signup(request):
                 profile = Profile()
                 data = form.cleaned_data
                 profile.name = data['name']
+                profile.username = data['username']
                 profile.email = data['email']
                 profile.phoneNumber = data['phoneNumber']
                 profile.profile_pic = data['profile_pic']
