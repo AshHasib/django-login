@@ -7,10 +7,29 @@ from django.urls import reverse
 # Create your views here.
 
 def index(request):
+    #print(request.session['username'])
+    if request.POST.get('logout'):
+        #print('Logout button clicked')
+        request.session.flush()
+        return redirect('login')
 
-    return render(request, 'index.html', {})
 
 
+    if request.session.has_key('username'):
+        u_name = request.session['username']
+        user = Profile.objects.get(username = u_name)
+        print(user.name)
+
+        data = {
+            'name':user.name,
+            'email':user.email
+        }
+        return render(request, 'index.html', data)
+    else:
+        return redirect('login')
+    
+
+    
 def login(request):
     form = LoginForm()
 
@@ -21,15 +40,21 @@ def login(request):
 
             data = form.cleaned_data
 
-            username = data['username']
-            password = data['password']
-
-            profile = Profile.objects.get(username = username)
-            if(username ==profile.username and password==profile.password):
-                return redirect('index')
+            u_name = data['username']
+            passwd = data['password']
+            print(u_name)
+            print(passwd)
+            profile = Profile.objects.get(username = u_name)
+            
+            if profile is not None:
+                if(u_name ==profile.username and passwd==profile.password):
+                    request.session['username']=u_name
+                    print('Session Created. . . ')
+                    return redirect('index')
+                else:
+                    return HttpResponse('Information incorrect')
             else:
                 return HttpResponse('Information incorrect')
-
 
             
     return render(request, 'login.html', {'form':form})

@@ -2,5 +2,16 @@
 
 
 {% block content %}
-
+<div class="jumbotron">
+    <h1 class="display-4">Welcome, Mr/Mrs. {{name}}</h1>
+    <p class="lead">We welcome you to our Django Login Website</p>
+    <hr class="my-4">
+    <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
+    <p class="lead">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-lg btn-info" name="logout" value="Logout">
+        </form>
+    </p>
+</div>
 {% endblock content %}
